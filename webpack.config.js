@@ -15,7 +15,7 @@ module.exports = function (env) {
 
     entry: {
       setup: 'react-hot-loader/patch',
-      app: './main.js'
+      app: './core/main.js'
     },
 
     // The place the built files get put

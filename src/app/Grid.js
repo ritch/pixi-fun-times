@@ -1,41 +1,12 @@
-import React, {Component} from 'react'
-import Smoothie from 'Base/core/Smoothie'
 import {
-  Container,
-  autoDetectRenderer,
-  Graphics,
-  hitTestRectangle
+  Graphics
 } from 'pixi.js'
 
-export default class App extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      squares: 1
-    }
-  }
-  render() {
-    return <div>
-      <Stage height={window.innerHeight} width={window.innerWidth} />
-    </div>
-  }
-}
-
-
-class Stage extends Component {
-  render() {
-    return (
-      <div id="pixi" ref="stage" />
-    )
-  }
-
-  componentDidMount() {
-    const HEIGHT = this.props.height
-    const WIDTH = this.props.width
-    const stage = new Container()
-    const renderer = autoDetectRenderer(WIDTH, HEIGHT, {antialias: true})
-    this.refs.stage.appendChild(renderer.view)
-
+export default class Grid {
+  setup(app) {
+    const HEIGHT = app.screen.height
+    const WIDTH = app.screen.width
+    const stage = app.stage
     const size = 50
 
     function getAdjCenter(centerX, centerY, size, vertex) {
@@ -92,22 +63,13 @@ class Stage extends Component {
       petalCount += created.length
       queue = queue.concat(created)
     }
+  }
+  update(delta, count) {
 
-    const update = () => {
-
-    }
-
-    var smoothie = new Smoothie({
-      renderer,
-      root: stage,
-      fps: 60,
-      update,
-      interpolate: true
-    })
-
-    smoothie.start()
   }
 }
+
+
 
 function createHex(x, y, size) {
   const hex = new Graphics()
@@ -125,6 +87,7 @@ function createHex(x, y, size) {
 
   hex.drawPolygon(pointsToArray(points))
   hex.endFill()
+  hex.drawCircle(x, y, 10)
 
   return hex
 }
