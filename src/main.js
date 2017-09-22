@@ -1,25 +1,24 @@
+require("react-hot-loader/patch")
+
 import React from 'react'
 import ReactDOM from 'react-dom'
 import {AppContainer} from 'react-hot-loader'
+import App from './App'
 
-let render = InitialCompoennt => {
+let render = (App) => {
   ReactDOM.render(
     <AppContainer errorReporter={bypassRedbox}>
-      <InitialCompoennt />
+      <App />
     </AppContainer>,
     document.getElementById('root')
   )
-}
-
-const App = () => {
-  return <div>Hello World</div>
 }
 
 render(App)
 
 // Hot Module Replacement API
 if (module.hot) {
-  module.hot.accept('./', () => {
+  module.hot.accept('./App.js', (App) => {
     render(App)
   })
 }

@@ -14,7 +14,7 @@ module.exports = function (env) {
     context: joinPath('src'),
 
     entry: {
-      setup: isProduction ? 'babel-polyfill' : 'react-hot-loader/patch',
+      setup: 'react-hot-loader/patch',
       app: './main.js'
     },
 
