@@ -25,5 +25,4 @@ function setup(app) {
 
 function update(delta, count) {
   grid.update(delta, count)
-  
 }
