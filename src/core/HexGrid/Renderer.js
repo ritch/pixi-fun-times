@@ -10,43 +10,43 @@ export default class Renderer {
   axialToPixel(axial) {
     let x = this.hexSize * 3 / 2 * axial.r
     let y = this.hexSize * Math.sqrt(3) * (axial.q + axial.r / 2)
-  
+    
     return new Point(x, y)
   }
 
-  createHexGraphic(cube) {
+  drawHex(cube, hex) {
     const center = this.axialToPixel(cube.toAxial())
     const size = this.hexSize
 
-    const hex = new Graphics()
     hex.beginFill(0xFFFFFF)
-    hex.lineStyle(4, 0xE8E8E8, 1)
+    hex.lineStyle(1, 0xE8E8E8, 1)
     const numSides = 6
     const points = []
 
     for (let i = 0; i <= numSides; i++) {
       const point = getHexPoint(center, size, i)
       points.push(point.x, point.y)
-
-      console.log(point)
     }
   
     hex.drawPolygon(points)
     hex.endFill()
-  
-    return hex
   }
 
   setup(app) {
-    for (let cube of this.cubeGrid.storage) {
-      const gfx = this.createHexGraphic(cube)
-      app.stage.addChild(gfx)
-    }
+    const gfx = this.gfx =  new Graphics()
+    app.stage.addChild(gfx)
+
+  
   }
 
   update() {
+    const gfx = this.gfx
+    
+    gfx.clear()
+
     for (let cube of this.cubeGrid.storage) {
 
+      this.drawHex(cube, gfx)
     }
   }
 }

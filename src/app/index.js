@@ -21,10 +21,10 @@ export default class MyApp extends Component {
 }
 
 
-const HEX_SIZE = 50
+const HEX_SIZE = 5
 const grid = new CubeGrid()
 const center = new Cube(0, 0, 0)
-const radius = 3
+const radius = 25
 
 grid.add(center)
 
@@ -46,5 +46,16 @@ function setup(app) {
 }
 
 function update(delta, count) {
+
+    const newCubes = []
+
+    console.log(count)
+    for (let cube of grid.storage) {
+      let randDir = Math.floor(Math.random()*6)
+      newCubes.push(cube.scale((Math.sin(count*10)+1)*.5))
+    }
+
+    grid.storage = newCubes 
+
   renderer.update(delta, count)
 }
