@@ -1,10 +1,5 @@
-function createMatrix(maxX, maxY) {
-  return new Array(maxY)
-    .fill(null)
-    .map(row => new Array(maxX).fill(0))
-}
 
-/*
+```
 function cube_spiral(center, radius):
     var results = [center]
     for each 1 ≤ k ≤ radius:
@@ -21,95 +16,8 @@ function cube_ring(center, radius):
             results.append(cube)
             cube = cube_neighbor(cube, i)
     return results
-*/
-
-function assert(expr) {
-  if (!expr) throw new Error('assertion failed')
-}
-
-const CUBE_DIRECTIONS = [
-  new Cube(1, 0, -1), new Cube(1, -1, 0), new Cube(0, -1, 1),
-  new Cube(-1, 0, 1), new Cube(-1, 1, 0), new Cube(0, 1, -1)
-]
-
-class Cube {
-  constructor (x, y, z) {
-    this.x = x
-    this.y = y
-    this.z = z
-  }
-  static direction(n /* 0 to 5 */) {
-    assert(0 <= n && n < 6)
-    return CUBE_DIRECTIONS[n]
-  }
-  add(a, b) {
-    return new Cube(
-      a.x + b.x,
-      a.y + b.y,
-      a.z + b.z
-    )
-  }
-  subtract(a, b) {
-    return new Cube(
-      a.x - b.x,
-      a.y - b.y,
-      a.z - b.z
-    )
-  }
-  subtract(b) {
-    const a = this
-    return new Cube(
-      a.x * b.x,
-      a.y * b.y,
-      a.z * b.z
-    )
-  }
-  length() {
-    return (Math.abs(this.x) + Math.abs(this.y) + Math.abs(this.z)) / 2
-  }
-  distanceTo(cube) {
-    const a = this
-    const b = cube
-    return a.subtract(b).length()
-  }
-  neighboor(direction) {
-    return this.add(Cube.direction(direction))
-  }
-}
-
-class CubeGrid() {
-  constructor(max) {
-    this.storage = 
-  }
-  add(cube) {
-
-  }
-  neighboor(cube, direction) {
-
-  }
-  scale() {
-
-  }
-  addRing(center, radius) {
-    const results
-    const cube = cube
 
 
-    return results
-  }
-
-  addSpiral(center, radius) {
-
-  }
-}
-
-function drawSpiral(center) {
-
-}
-
-
-
-/*
 function cube_spiral(center, radius):
     var results = [center]
     for each 1 ≤ k ≤ radius:
@@ -134,11 +42,10 @@ function hex_to_pixel(hex):
     x = size * sqrt(3) * (hex.q + hex.r/2)
     y = size * 3/2 * hex.r
     return Point(x, y)
-*/
 
-/*
+- - 
 pixel => axial
-
+- - 
 function pixel_to_hex(x, y):
     q = x * 2/3 / size
     r = (-x / 3 + sqrt(3)/3 * y) / size
@@ -166,3 +73,4 @@ function cube_round(cube):
 
 function hex_round(hex):
     return cube_to_axial(cube_round(axial_to_cube(hex)))
+```
