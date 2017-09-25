@@ -6,7 +6,6 @@ import {
 
 import {Renderer, CubeGrid, Cube} from 'Base/core/HexGrid'
 
-
 export default class MyApp extends Component {
   render() {
     return <div>
@@ -15,47 +14,69 @@ export default class MyApp extends Component {
         width={window.innerWidth}
         update={update}
         setup={setup}
+        backgroundColor={0x393d44}
       />
     </div>
   }
 }
 
+function toggleSelected(meta) {
+  if (meta.selected) {
+    meta.fill = style.fill
+    meta.selected = false
+  } else {
+    meta.fill = 0x37435b
+    meta.selected = true
+  }
+}
 
-const HEX_SIZE = 5
-const grid = new CubeGrid()
+
+const HEX_SIZE = 10
+const grid = new CubeGrid({
+  onSelect(meta, cube, id) {
+    const cubes = CubeGrid.buildRing(cube, 2)
+    for (let cube of cubes) {
+      const id = grid.get(cube)
+      if (id) {
+        const meta = grid.getMeta(id)
+        if (meta) {
+          toggleSelected(meta)
+        }
+      }
+    }
+  },
+  onMouseEnter(meta) {
+    if (meta.selected) return
+    meta.fill = 0x5d6c87
+  },
+  onMouseOut(meta) {
+    if (meta.selected) return
+    meta.fill = style.fill
+  }
+})
 const center = new Cube(0, 0, 0)
-const radius = 25
+const radius = 20
 
-grid.add(center)
+const style = {
+  fill: 0xeaf2ff,
+  line: 0xa1b1cc
+}
+
+grid.add(style, center)
 
 for (let i = 1; i <= radius; i++) {
   const ring = CubeGrid.buildRing(center, i)
-  grid.add(...ring)
+  grid.add(style, ...ring)
 }
 
 // grid.add(center)
-
-const renderer = new Renderer(grid, HEX_SIZE)
+const offset = {x: window.innerWidth / 2, y: window.innerHeight / 2}
+const renderer = new Renderer(grid, HEX_SIZE, offset)
 
 function setup(app) {
-  // TODO fixme
-  app.stage.x += window.innerWidth / 2
-  app.stage.y += window.innerHeight / 2
-
   renderer.setup(app)
 }
 
 function update(delta, count) {
-
-    const newCubes = []
-
-    console.log(count)
-    for (let cube of grid.storage) {
-      let randDir = Math.floor(Math.random()*6)
-      newCubes.push(cube.scale((Math.sin(count*10)+1)*.5))
-    }
-
-    grid.storage = newCubes 
-
   renderer.update(delta, count)
 }

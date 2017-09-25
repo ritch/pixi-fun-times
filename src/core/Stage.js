@@ -9,8 +9,8 @@ export default class Stage extends Component {
   }
 
   componentDidMount() {
-    const {height, width, update, setup} = this.props
+    const {height, width, update, setup, backgroundColor} = this.props
     const domElement = this.refs.stage
-    const stage = setupStage({height, width, domElement, update, setup})
+    const stage = setupStage({height, width, domElement, update, setup, backgroundColor})
   }
 }

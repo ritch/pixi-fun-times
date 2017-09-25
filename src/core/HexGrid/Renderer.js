@@ -1,25 +1,38 @@
+import Axial from './axial'
 import Point from './Point'
 import {Graphics} from 'pixi.js'
 
 export default class Renderer {
-  constructor(cubeGrid, hexSize) {
+  constructor(cubeGrid, hexSize, offset) {
     this.cubeGrid = cubeGrid
-    this.hexSize = hexSize;
+    this.hexSize = hexSize
+    this.offset = offset
+  }
+
+  cubeAtPoint(point) {
+    return this.pixelToAxial(point).toCube()
+  }
+
+  pixelToAxial({x, y}) {
+    const hexSize = this.hexSize
+    const q = x * 2/3 / hexSize
+    const r = (-x / 3 + Math.sqrt(3) / 3 * y) / hexSize
+    return (new Axial(q, r)).round()
   }
 
   axialToPixel(axial) {
-    let x = this.hexSize * 3 / 2 * axial.r
-    let y = this.hexSize * Math.sqrt(3) * (axial.q + axial.r / 2)
-    
+    const size = this.hexSize
+    const x = size * 3 / 2 * axial.q
+    const y = size * Math.sqrt(3) * (axial.r + axial.q / 2)
     return new Point(x, y)
   }
 
-  drawHex(cube, hex) {
+  drawHex(gfx, cube, meta) {
     const center = this.axialToPixel(cube.toAxial())
     const size = this.hexSize
 
-    hex.beginFill(0xFFFFFF)
-    hex.lineStyle(1, 0xE8E8E8, 1)
+    gfx.beginFill(meta.fill)
+    gfx.lineStyle(1, meta.line, 1)
     const numSides = 6
     const points = []
 
@@ -28,14 +41,52 @@ export default class Renderer {
       points.push(point.x, point.y)
     }
   
-    hex.drawPolygon(points)
-    hex.endFill()
+    gfx.drawPolygon(points)
+    gfx.endFill()
+  }
+
+  getPointFromEvent(e) {
+    const {x, y} = e.data.global
+    const topLeftPoint = new Point(x, y)
+    return topLeftPoint.subtract(this.offset)
   }
 
   setup(app) {
     const gfx = this.gfx =  new Graphics()
     app.stage.addChild(gfx)
+    app.stage.x = this.offset.x
+    app.stage.y = this.offset.y
+    gfx.interactive = true
 
+    gfx.on('click', (e) => {
+      const centerPoint = this.getPointFromEvent(e)
+      const cube = this.cubeAtPoint(centerPoint)
+      if (cube) {
+        this.cubeGrid.handleSelect(cube)
+      }
+    })
+
+    let prevHoveringOver = null
+
+    gfx.on('mousemove', (e) => {
+      // TODO - maybe move this to the grid?
+
+      const centerPoint = this.getPointFromEvent(e)
+      const currentlyHoveringOver = this.cubeAtPoint(centerPoint)
+
+      if (currentlyHoveringOver !== prevHoveringOver) {
+        // changed what we are hovering over
+        if (prevHoveringOver) {
+          this.cubeGrid.handleMouseOut(prevHoveringOver)
+        }
+        if (currentlyHoveringOver) {
+          this.cubeGrid.handleMouseEnter(currentlyHoveringOver)
+        }
+        prevHoveringOver = currentlyHoveringOver    
+      } else if (currentlyHoveringOver) {
+        this.cubeGrid.handleMouseOver(currentlyHoveringOver)
+      }
+    })
   
   }
 
@@ -44,16 +95,20 @@ export default class Renderer {
     
     gfx.clear()
 
-    for (let cube of this.cubeGrid.storage) {
-
-      this.drawHex(cube, gfx)
-    }
+    this.cubeGrid.each((cube, meta) => {
+      this.drawHex(gfx, cube, meta)
+    })
   }
 }
 
-function createHex(point, size) {
-  
-}
+/*
+function pixel_to_hex(x, y):
+    q = x * 2/3 / size
+    r = (-x / 3 + sqrt(3)/3 * y) / size
+    return hex_round(Hex(q, r))
+*/
+
+
 
 function getHexPoint({x, y}, size, n) {
   const oneHexSliceRad = 2 * Math.PI / 6

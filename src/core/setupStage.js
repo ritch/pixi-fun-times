@@ -6,8 +6,8 @@ import {
 } from 'pixi.js'
 
 
-export default function setupStage({width, height, domElement, update, setup}) {
-  const app = new Application(width, height, {antialias: true})
+export default function setupStage({width, height, domElement, update, setup, backgroundColor}) {
+  const app = new Application(width, height, {antialias: true, backgroundColor})
   let updateCount = 0
 
   domElement.appendChild(app.view)

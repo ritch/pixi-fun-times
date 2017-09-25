@@ -1,16 +1,43 @@
 import Cube from './Cube'
 import assert from './assert'
+import createMatrix from './createMatrix'
 
 export default class CubeGrid {
-  constructor() {
-    this.storage = []
+  constructor({onSelect, onMouseOver, onMouseEnter, onMouseOut}) {
+    this.onSelect = onSelect
+    this.onMouseOver = onMouseOver
+    this.onMouseEnter = onMouseEnter
+    this.onMouseOut = onMouseOut
+    this.storage = {}
   }
-  add(...cube) {
-    // TODO(matt) optimiz3
-    this.storage.push(...cube)
+  add(meta, ...cube) {
+    for (let c of cube) {
+      this.set(c.hash(), {...meta})
+    }
   }
-  remove(cube) {
-    throw new Error('oops this aint here yet')
+  each(fn) {
+    for (let [hash, value] of Object.entries(this.storage)) {
+      fn(Cube.fromHash(hash), value)
+    }
+  }
+  get(cube) {
+    if (cube) {
+      const hash = cube.hash()
+      if (hash in this.storage) {
+        return hash
+      }
+    }
+  }
+  getMeta(hash) {
+    if (hash) {
+      return this.storage[hash]
+    }
+  }
+  set(hash, value) {
+    this.storage[hash] = value
+  }
+  remove(hash) {
+    this.set(hash, null)
   }
 
   static buildRing(center, radius) {
@@ -34,5 +61,38 @@ export default class CubeGrid {
 
   addSpiral(center, radius) {
 
+  }
+
+  handleSelect(cube) {
+    if (!this.onSelect) return
+    const hash = this.get(cube)
+
+    if (hash) {
+      this.onSelect(this.getMeta(hash), cube, hash)
+    }
+  }
+  handleMouseEnter(cube) {
+    if (!this.onMouseEnter) return
+    const hash = this.get(cube)
+
+    if (hash) {
+      this.onMouseEnter(this.getMeta(hash), cube, hash)
+    }
+  }
+  handleMouseOut(cube) {
+    if (!this.onMouseOut) return
+    const hash = this.get(cube)
+
+    if (hash) {
+      this.onMouseOut(this.getMeta(hash), cube, hash)
+    }
+  }
+  handleMouseOver(cube) {
+    if (!this.onMouseOver) return
+    const hash = this.get(cube)
+
+    if (hash) {
+      this.onMouseOver(this.getMeta(hash), cube, hash)
+    }
   }
 }
