@@ -39,6 +39,7 @@ const grid = new CubeGrid({
     } else if (end == null) {
       meta.fill = 0x0000FF
       end = [indexX, indexY]
+      
       var path = finder.findPath(start[0],
         start[1],
         end[0],
@@ -90,17 +91,13 @@ for (let i = 1; i <= radius; i++) {
 const offset = { x: window.innerWidth / 2, y: window.innerHeight / 2 }
 const renderer = new Renderer(grid, HEX_SIZE, offset)
 
-String.prototype.replaceAt = function (index, replacement) {
-  return this.substr(0, index) + replacement + this.substr(index + replacement.length);
-}
-
 function setup(app) {
   renderer.setup(app)
   //set the map for the pathfinder
   for (let hash in grid.storage) {
     if (Math.random() < .35) {
-      var cube = grid.storage[hash]
-      var newAxial = cube.cube.toAxial()
+      var item = grid.storage[hash]
+      var newAxial = item.cube.toAxial()
 
       //convert pos/neg coords to positive indexable for the pathfinder
       let indexX = newAxial.q + 20;
