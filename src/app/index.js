@@ -4,7 +4,7 @@ import {
   Graphics
 } from 'pixi.js'
 
-var PF = require('pathfinding');
+let PF = require('pathfinding');
 
 import { Renderer, CubeGrid, Cube } from 'Base/core/HexGrid'
 
