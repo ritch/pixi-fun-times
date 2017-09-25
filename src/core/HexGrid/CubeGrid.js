@@ -12,7 +12,7 @@ export default class CubeGrid {
   }
   add(meta, ...cube) {
     for (let c of cube) {
-      this.set(c.hash(), {...meta})
+      this.set(c.hash(), {...meta, cube: c})
     }
   }
   each(fn) {
